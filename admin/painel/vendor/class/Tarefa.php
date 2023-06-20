@@ -9,115 +9,76 @@ class Tarefa extends Database
         parent::getInstancia();
     }
 
-    public function readAll()
+    public function verTudo($userId)
     {
-        parent::getInstancia();
         $database = Database::getInstancia();
         $database = $this->getInstancia();
 
         $sql = "SELECT *
-      FROM tbl_post
-      INNER JOIN tbl_catagoria
-      ON tbl_post.categoriaId = tbl_catagoria.idCategoria;";
+      FROM tbl_tarefa WHERE user_id = $userId";
         $read = $database->query($sql);
 
-        $posts = [];
+        $tarefas = [];
 
         while ($row = $read->fetch(PDO::FETCH_ASSOC)) {
-            $posts[] = $row;
+            $tarefas[] = $row;
         }
 
-        return $posts;
+        return $tarefas;
     }
 
-
-    public function readCategory($idCategoria)
+    public function ver($id)
     {
-        parent::getInstancia();
         $database = Database::getInstancia();
         $database = $this->getInstancia();
-
-        $sql = "SELECT *
-      FROM tbl_post
-      INNER JOIN tbl_catagoria
-      ON tbl_post.categoriaId = tbl_catagoria.idCategoria
-      where tbl_post.categoriaId = '{$idCategoria}'";
+        $sql = "select * from tbl_tarefa where id_tarefa = '{$id}'";
         $read = $database->query($sql);
-
-        $postsCategory = [];
-
-        while ($row = $read->fetch(PDO::FETCH_ASSOC)) {
-            $postsCategory[] = $row;
-        }
-        
-        return $postsCategory;
+        $tarefa = $read->fetch(PDO::FETCH_ASSOC);
+        return $tarefa;
     }
 
 
-    public function read($id)
-    {
-        parent::getInstancia();
-        $database = Database::getInstancia();
-
-        $database = $this->getInstancia();
-        $sql = "select * from tbl_catagoria where idCategoria = '{$id}'";
-        $read = $database->query($sql);
-        $categoria = $read->fetch(PDO::FETCH_ASSOC);
-        return $categoria;
-    }
-
-
-    public function createPost()
+    public function criarTarefa($userId)
     {
         $database = Database::getInstancia();
 
         $database = $this->getInstancia();
 
-
-
-        $titulo = $_POST['titulo'];
         $descricao = $_POST['descricao'];
-        $categoria = $_POST['categoria'];
-        $userId = $_POST['userId'];
-
 
         $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $query = $database->prepare("insert into tbl_post(tituloPost,descricaoPost,categoriaId,usuarioId) values (:tituloPost,:descricaoPost,:categoria,:userId)");
+        $query = $database->prepare("insert into tbl_tarefa(descricao_tafera,status_tarefa,user_id) values (:descricao,:status,:userId)");
 
-        $query->bindValue(":tituloPost", "$titulo");
-        $query->bindValue(":descricaoPost", "$descricao");
-        $query->bindValue(":categoria", "$categoria");
-        $query->bindValue(":userId", "$userId");
+        $query->bindValue(":descricao", "$descricao");
+        $query->bindValue(":status", 1);
+        $query->bindValue(":userId", $userId);
         $query->execute();
+        header("Location: index.php");
     }
 
-    public function deletar()
+    public function deletarTarefa()
     {
-        parent::getInstancia();
         $database = Database::getInstancia();
 
         $database = $this->getInstancia();
-        $sql = "delete from tbl_catagoria where idCategoria='{$_POST['id']}'";
+        $sql = "delete from tbl_tarefa where id_tarefa='{$_POST['idDeletar']}'";
         $database->query($sql);
     }
 
-    public function updateCategory()
+    public function editarTarefa()
     {
         $database = Database::getInstancia();
 
         $database = $this->getInstancia();
 
-        $id = $_POST['id'];
-        $titulo = $_POST['titulo'];
+        $id = $_POST['idTarefa'];
         $descricao = $_POST['descricao'];
 
 
         $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $query = $database->prepare("update tbl_catagoria set 
-        tituloCategoria = :tituloCategoria,descricaoCategoria= :descricaoCategoria where idCategoria = $id");
-
-        $query->bindValue(":tituloCategoria", "$titulo");
-        $query->bindValue(":descricaoCategoria", "$descricao");
+        $query = $database->prepare("update tbl_tarefa set descricao_tafera= :descricao where id_tarefa = $id");
+        $query->bindValue(":descricao", "$descricao");
         $query->execute();
+        header("Location: index.php");
     }
 }
