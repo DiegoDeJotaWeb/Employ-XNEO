@@ -50,7 +50,7 @@ class Tarefa extends Database
         $query = $database->prepare("insert into tbl_tarefa(descricao_tafera,status_tarefa,user_id) values (:descricao,:status,:userId)");
 
         $query->bindValue(":descricao", "$descricao");
-        $query->bindValue(":status", 1);
+        $query->bindValue(":status", 0);
         $query->bindValue(":userId", $userId);
         $query->execute();
         header("Location: index.php");
@@ -80,5 +80,24 @@ class Tarefa extends Database
         $query->bindValue(":descricao", "$descricao");
         $query->execute();
         header("Location: index.php");
+    }
+
+    public function status($marcado,$valor)
+    {
+        $database = Database::getInstancia();
+
+        $database = $this->getInstancia();
+
+        $id = $_POST['$marcado'];
+        echo $marcado;
+        echo $valor;
+
+
+        $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $query = $database->prepare("update tbl_tarefa set status_tarefa= :status where id_tarefa = $valor");
+        $query->bindValue(":status", $marcado);
+        $query->execute();
+        
+        // header("Location: index.php");
     }
 }

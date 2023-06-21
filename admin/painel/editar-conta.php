@@ -21,6 +21,15 @@ $custo = "06";
 $senhaHash = crypt($senha, "$2b$" . $custo . "$" . $salt . "$");
 
 
+if (isset($_POST['action'])) {
+    if ($_POST['action'] == 'editarUser') {
+
+        $update = new User();
+        $update->editar();
+
+        echo $_POST['nome'];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -41,14 +50,14 @@ $senhaHash = crypt($senha, "$2b$" . $custo . "$" . $salt . "$");
 <body>
     <nav>
         <div class="flex space-between">
-        <div class="logo"><a href="index.php">To-Do-List</a> </div>
+            <div class="logo"><a href="index.php">To-Do-List</a> </div>
             <ul class="flex">
                 <li class="avatar">
                     <img src="assets/img/avatar.png" alt="">
 
                 </li>
                 <li><a href="editar-conta.php"><?= $userNome; ?></a></li>
-                
+
 
                 <li><a href="../logout.php"><i class="fa-solid fa-power-off"></i></a></li>
 
@@ -68,31 +77,22 @@ $senhaHash = crypt($senha, "$2b$" . $custo . "$" . $salt . "$");
                 <label for="">Senha</label>
                 <input type="password" name="senha" placeholder="*******">
 
-
-                <input type="hidden" name="action" value="criarUser">
-
-
-
                 <label class="form-label">Avatar</label>
-                <input type="file" class="form-control" placeholder="Enter Name here" name="avatar" value="<?php echo $avatar ?>" id="img-capa" onchange="trocarCapa()">
-
-                <input type="hidden" name="action" value="update">
+                <input type="file" class="form-control" placeholder="Enter Name here" name="avatar" value="<?php echo $avatar ?>" id="img-capa" onchange="trocarAvatar()">
+                <input type="hidden" name="id" value="<?=$userId?>">
+                <input type="hidden" name="action" value="editarUser">
 
                 <img src="assets/img/<?php echo $avatar ?>" class="img-fluid avatar" alt="" id="target-capa">
 
-        
+                <input type="submit" value="Alterar" class="btn">
 
-
-
-        <input type="submit" value="Alterar" class="btn">
-
-        </form>
-    </div>
+            </form>
+        </div>
     </div>
 
 
     <script>
-        function trocarCapa() {
+        function trocarAvatar() {
             var target = document.getElementById('target-capa');
             var file = document.querySelector('#img-capa').files[0];
 
@@ -109,7 +109,7 @@ $senhaHash = crypt($senha, "$2b$" . $custo . "$" . $salt . "$");
             }
         }
     </script>
-        <script src="https://kit.fontawesome.com/a342c01441.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/a342c01441.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

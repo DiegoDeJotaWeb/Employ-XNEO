@@ -34,7 +34,7 @@ class User extends Database
 
             $database->query("insert into tbl_user(nome_user,email_user,senha_user,avatar_user)
       values
-      ('admin','$email', '$senhaHash','avatar.jpg');");
+      ('admin','$email', '$senhaHash','avatar.png');");
         }
     }
 
@@ -138,5 +138,66 @@ class User extends Database
       echo "<script>alert('E-mail já cadastrado!');</script>";
       echo "<script>window.location.href = 'criar.php'</script>";
     }
+  }
+
+
+  public function editar()
+  {
+    $database = Database::getInstancia();
+    $database = $this->getInstancia();
+
+
+    $ext = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
+
+    if ($ext == 'jpg' || $ext == 'png') {
+
+      $nomeNovo = md5(date('dmYHiimg') . $_FILES['avatar']['tmp_name']);
+
+      $destino = 'assets/img/' . $nomeNovo . "." . $ext;
+
+      $avatar = $nomeNovo . "." . $ext;
+
+      $arquivo_tmp = $_FILES['avatar']['tmp_name'];
+
+      move_uploaded_file($arquivo_tmp, $destino);
+    }
+
+    $salt = md5($_POST['email'] . $_POST['senha']);
+    $custo = "06";
+    $senhaHash = crypt($_POST['senha'], "$2b$" . $custo . "$" . $salt . "$");
+
+    if ($_POST['senha'] == "" && $_FILES['avatar']['name'] == '') {
+      $sql = "update tbl_user set 
+      nome_user = '{$_POST['nome']}', 
+      email_user = '{$_POST['email']}'     
+      where id_user = '{$_POST['id']}'";
+      $database->query($sql);
+    } elseif ($_FILES['avatar']['name'] == "") {
+      $sql = "update tbl_user set 
+      nome_user = '{$_POST['nome']}', 
+      email_user = '{$_POST['email']}',
+      senha_user = '$senhaHash'   
+      where id_user = '{$_POST['id']}'";
+      $database->query($sql);
+    } elseif ($_POST['senha'] == "") {
+      $sql = "update tbl_user set 
+      nome_user = '{$_POST['nome']}', 
+      email_user = '{$_POST['email']}',
+      avatar_user = '{$avatar}'      
+      where id_user = '{$_POST['id']}'";
+      $database->query($sql);
+    } else {
+      $sql = "update tbl_user set 
+      nome_user = '{$_POST['nome']}', 
+      email_user = '{$_POST['email']}', 
+      senha_user = '$senhaHash',
+      avatar_user = '{$avatar}'
+      
+      where id_user = '{$_POST['id']}'";
+      $database->query($sql);
+      
+    }
+
+    header("Location: index.php");
   }
 }
