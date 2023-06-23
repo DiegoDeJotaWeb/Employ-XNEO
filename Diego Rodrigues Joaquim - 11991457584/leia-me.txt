@@ -1,0 +1,9 @@
+Ao entrar na index pela primeira vez criará um usuário automaticamente com o login e senha;
+
+Login: admin@admin.com.br
+Senha: admin
+
+
+Meu contatos
+E-mail: diegorodriguesdev@gmail.com
+Celular/ WhatsApp: 11 99145-7584
